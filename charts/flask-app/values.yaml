@@ -1,0 +1,57 @@
+
+replicaCount: 2
+
+hpa:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 10
+  cpuUtilization: 80
+
+image:
+  repository: emanuelelevo/flask-app
+  tag: latest
+  pullPolicy: IfNotPresent
+
+service:
+  type: NodePort
+  port: 80
+  targetPort: 5000
+
+resources:
+  limits:
+    memory: 512Mi
+    cpu: 500m
+  requests:
+    memory: 256Mi
+    cpu: 250m
+
+livenessProbe:
+  path: /livez
+  port: 5000
+  initialDelaySeconds: 30
+  periodSeconds: 10
+
+readinessProbe:
+  path: /readyz
+  port: 5000
+  initialDelaySeconds: 30
+  periodSeconds: 10
+
+ingress:
+  enabled: true
+  annotations:
+    kubernetes.io/ingress.class: alb
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/healthcheck-path: /livez
+  hosts:
+    - host: "*.com"
+
+serviceAccount:
+  enabled: true
+  name: flask-app
+
+env:
+  AWS_REGION: eu-north-1
+  DYNAMODB_TABLE: my-table
+  S3_BUCKET: my-bucket
+  LOG_LEVEL: INFO

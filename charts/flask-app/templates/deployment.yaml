@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-flask-app
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Release.Name }}-flask-app
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-flask-app
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-flask-app
+    spec:
+      {{- if .Values.serviceAccount.enabled }}
+      serviceAccountName: {{ .Values.serviceAccount.name }}
+      {{- end }}
+      containers:
+      - name: flask-app
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        ports:
+        - containerPort: 5000
+        env:
+        - name: AWS_REGION
+          value: "{{ .Values.env.AWS_REGION }}"
+        - name: AWS_ACCESS_KEY_ID
+          value: "{{ .Values.env.AWS_ACCESS_KEY_ID }}"
+        - name: AWS_SECRET_ACCESS_KEY
+          value: "{{ .Values.env.AWS_SECRET_ACCESS_KEY }}"
+        - name: AWS_ENDPOINT_URL
+          value: "{{ .Values.env.AWS_ENDPOINT_URL }}"
+        - name: DYNAMODB_TABLE
+          value: "{{ .Values.env.DYNAMODB_TABLE }}"
+        - name: S3_BUCKET
+          value: "{{ .Values.env.S3_BUCKET }}"
+        - name: LOG_LEVEL
+          value: "{{ .Values.env.LOG_LEVEL }}"
+        resources:
+          limits:
+            memory: "{{ .Values.resources.limits.memory }}"
+            cpu: "{{ .Values.resources.limits.cpu }}"
+          requests:
+            memory: "{{ .Values.resources.requests.memory }}"
+            cpu: "{{ .Values.resources.requests.cpu }}"
+        livenessProbe:
+          httpGet:
+            path: "{{ .Values.livenessProbe.path }}"
+            port: {{ .Values.livenessProbe.port }}
+          initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+        readinessProbe:
+          httpGet:
+            path: "{{ .Values.readinessProbe.path }}"
+            port: {{ .Values.readinessProbe.port }}
+          initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.readinessProbe.periodSeconds }}

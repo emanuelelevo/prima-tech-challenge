@@ -1,0 +1,84 @@
+{
+    "swagger": "2.0",
+    "info": {
+      "title": "Flask App API",
+      "description": "API documentation for the Flask App",
+      "version": "1.0.0"
+    },
+    "host": "localhost:5000",
+    "basePath": "/",
+    "schemes": [
+      "http"
+    ],
+    "paths": {
+      "/users": {
+        "get": {
+          "summary": "Get Users",
+          "description": "Retrieve a list of all users from DynamoDB",
+          "responses": {
+            "200": {
+              "description": "A list of users",
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "avatar_url": {
+                      "type": "string"
+                    },
+                    "email": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Internal Server Error"
+            }
+          }
+        }
+      },
+      "/user": {
+        "post": {
+          "summary": "Create User",
+          "description": "Create a new user and upload an avatar image to S3",
+          "parameters": [
+            {
+              "name": "name",
+              "in": "formData",
+              "type": "string",
+              "required": true,
+              "description": "Name of the user"
+            },
+            {
+              "name": "email",
+              "in": "formData",
+              "type": "string",
+              "required": true,
+              "description": "Email of the user"
+            },
+            {
+              "name": "avatar",
+              "in": "formData",
+              "type": "file",
+              "required": true,
+              "description": "Avatar image file"
+            }
+          ],
+          "responses": {
+            "201": {
+              "description": "User created successfully"
+            },
+            "500": {
+              "description": "Internal Server Error"
+            }
+          }
+        }
+      }
+    }
+  }
+  

@@ -1,0 +1,19 @@
+name: prima-test
+runtime:
+  name: python
+  options:
+    toolchain: poetry
+description: Tech challenge Senior SRE - July 24
+config:
+  aws:region: "eu-north-1"
+  bucket-name: "elevorin-prima-test"
+  table-name: "elevorin-prima-test"
+  flask-app-namespace: "default"
+  flask-app-sa-name: "flask-app"
+  cluster-name: "elevorin-prima-test"
+  min-cluster-size: 2
+  max-cluster-size: 6
+  desired-cluster-size: 2
+  eks-node-instance-type: "t3.medium"
+  vpc-network-cidr: "10.0.0.0/16"
+  localstack-url: "http://192.168.0.2:4566"

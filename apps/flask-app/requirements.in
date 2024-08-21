@@ -1,0 +1,6 @@
+boto3>=1.34.149,<2.0.0
+flask>=3.0.3,<4.0.0
+flask-swagger-ui>=4.11.1,<5.0.0
+werkzeug>=3.0.3,<4.0.0
+python-dotenv>=1.0.1,<2.0.0
+python-json-logger>=2.0.7,<3.0.0
